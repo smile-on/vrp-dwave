@@ -1,7 +1,7 @@
 from vrp_data import VRPData
 
 # formulates VRP problem
-from vrp_solution import VRPSolution
+from vrp_solution import VRPSolution, SolutionStatus
 
 
 class VRPCapacitated(VRPData):
@@ -11,7 +11,18 @@ class VRPCapacitated(VRPData):
         self.copy(data)
         pass
 
-    status = None
+    status = SolutionStatus.UNKNOWN
 
     def find_solution(self) -> VRPSolution:
+        self.formulate()
+        self.solve()
+        if self.status == SolutionStatus.FOUND:
+            # todo read solution
+            pass
         return None
+
+    def formulate(self):
+        pass
+
+    def solve(self):
+        pass

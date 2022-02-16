@@ -13,15 +13,15 @@ class VRPData:
     # copy constructor
     def copy(self, data):
         self.n_stops = data.n_stops
-        self.capacity_stop = data.capacity_stop
+        self.capacity_stop = np.copy(data.capacity_stop)
         self.n_vans = data.n_vans
-        self.capacity_van = data.capacity_van
+        self.capacity_van = np.copy(data.capacity_van)
         self.n_nodes = data.n_nodes
-        self.cost = data.cost
-        self.integrity_ceck()
+        self.cost = np.copy(data.cost)
+        self.integrity_check()
 
     # integrity checks on internal data structures
-    def integrity_ceck(self):
+    def integrity_check(self):
         capacity_stop_shape = (self.n_stops,)
         if self.capacity_stop.shape != capacity_stop_shape:
             raise ValueError(
@@ -46,5 +46,5 @@ def load_vrp_data() -> VRPData:
         [3, 8, 0, 4],
         [6, 1, 4, 0],
     ], dtype=np.double)
-    data.integrity_ceck()
+    data.integrity_check()
     return data

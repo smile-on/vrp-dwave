@@ -15,7 +15,7 @@ def run_vrp(name):
         run_seconds = time.monotonic() - start
         print(f'run_seconds {run_seconds:0,.4f}')
         if solution is None:
-            print('solution is NOT found.')
+            print(f'solution is NOT found. VRP status: {vrp.status.value}.')
         else:
             print('solution is found.')
             print(solution.to_string())
