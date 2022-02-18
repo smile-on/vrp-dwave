@@ -11,5 +11,8 @@ class SolutionStatus(Enum):
 
 class VRPSolution:
 
-    def to_string(self) -> str:
-        return 'solution <..>'
+    def __init__(self, sample):
+        self.sample = sample
+
+    def str(self) -> str:
+        return self.sample.str()

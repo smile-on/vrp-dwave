@@ -18,7 +18,7 @@ def run_vrp(name):
             print(f'solution is NOT found. VRP status: {vrp.status.value}.')
         else:
             print('solution is found.')
-            print(solution.to_string())
+            print(solution.str())
         print(f'VRP done {name}')
     except ValueError as e:
         print(f'VRP ERROR: {e}')
