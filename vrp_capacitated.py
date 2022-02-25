@@ -2,18 +2,24 @@ from dimod import ConstrainedQuadraticModel, Binary, quicksum
 from dwave.system import LeapHybridCQMSampler
 
 from vrp_data import VRPData
-# formulates VRP problem
 from vrp_solution import VRPSolution, SolutionStatus
 
 
 class VRPCapacitated(VRPData):
+    """VRPCapacitated formulates capacitated VRP problem and solves the problem using D-Wave API."""
 
-    # formulates VRP problem
-    def __init__(self, data: VRPData):
-        self.copy(data)
+    def __init__(self, problem: VRPData):
+        """Constructor formulates VRP problem.
+        Args:
+            data: VRPData definition of VRP problem.
+        Returns:
+             VRP: VRPCapacitated an instance of CQM model
+        """
+        self.copy(problem)
         pass
 
     def find_solution(self) -> VRPSolution:
+        """solves the problem using D-Wave API."""
         self.formulate()
         self.solve()
         if self.status == SolutionStatus.FOUND:
@@ -56,8 +62,24 @@ class VRPCapacitated(VRPData):
         # minimize
         self.cqm.set_objective(quicksum(routes))
 
+    def decode_solution(self) -> VRPSolution:
+        """Interpret the sample found in terms of routes."""
+        routes = []
+        for v in range(self.n_vans):
+            route = [0]
+            for n in range(self.n_nodes):
+                for s in range(1, self.n_stops):
+                    if self.best_sample[f'x_{v}.{n}.{s}'] > 0:
+                        route.append(s)
+                        break
+                pass
+            pass
+            routes.append(route)
+        pass
+        return VRPSolution(routes, self.cost)
+
     def solve(self):
-        # self.model_dump_to("../self.cqm.bin")
+        # self.dump_model_to("../cqm.bin")
         sampler = LeapHybridCQMSampler()
         answer = sampler.sample_cqm(self.cqm)  # time_limit=5 sec num_reads=?
         try:
@@ -71,24 +93,7 @@ class VRPCapacitated(VRPData):
                 self.best_sample = None
                 self.status = SolutionStatus.UNKNOWN
 
-    def decode_solution(self) -> VRPSolution:
-        """Interpret the sample found in terms of routes."""
-        routes = []
-        for v in range(self.n_vans):
-            route = [0]
-            for n in range(self.n_nodes):
-                for s in range(1, self.n_stops):
-                    # best_sample.sample['x']
-                    if self.best_sample[f'x_{v}.{n}.{s}'] > 0:
-                        route.append(s)
-                        break
-                pass
-            pass
-            routes.append(route)
-        pass
-        return VRPSolution(routes, self.cost)
-
-    def model_dump_to(self, file_name: str):
+    def dump_model_to(self, file_name: str):
         """Write dump of the cqm model into the file for debugging purpose."""
         with open(file_name, "wb", buffering=0) as f:
             f.write(self.cqm.to_file().read())

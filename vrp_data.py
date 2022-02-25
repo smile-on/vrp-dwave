@@ -1,27 +1,28 @@
 import numpy as np
 
 
-# VRPData defines VRP problem
 class VRPData:
+    """VRPData completely defines VRP problem."""
+
     n_stops = 0
     capacity_stop = np.zeros(n_stops, dtype=int)
-    n_vans = 2
+    n_vans = 0
     capacity_van = np.zeros(n_vans, dtype=int)
-    n_nodes = 3
+    n_nodes = 0
     cost = np.zeros((n_stops, n_stops), dtype=np.double)
 
-    # copy constructor
-    def copy(self, data):
-        self.n_stops = data.n_stops
-        self.capacity_stop = np.copy(data.capacity_stop)
-        self.n_vans = data.n_vans
-        self.capacity_van = np.copy(data.capacity_van)
-        self.n_nodes = data.n_nodes
-        self.cost = np.copy(data.cost)
+    def copy(self, other):
+        """Makes this VRPData instance a full copy of the other VRPData object."""
+        self.n_stops = other.n_stops
+        self.capacity_stop = np.copy(other.capacity_stop)
+        self.n_vans = other.n_vans
+        self.capacity_van = np.copy(other.capacity_van)
+        self.n_nodes = other.n_nodes
+        self.cost = np.copy(other.cost)
         self.integrity_check()
 
-    # integrity checks on internal data structures
     def integrity_check(self):
+        """Performs data integrity checks on internal data structures."""
         capacity_stop_shape = (self.n_stops,)
         if self.capacity_stop.shape != capacity_stop_shape:
             raise ValueError(
@@ -34,6 +35,7 @@ class VRPData:
 
 
 def load_vrp_data() -> VRPData:
+    """A toy VRP problem as defined at https://github.com/smile-on/ortools-samples ."""
     data = VRPData()
     data.n_stops = 4
     data.capacity_stop = np.array([0, 1, 1, 1], dtype=int)
